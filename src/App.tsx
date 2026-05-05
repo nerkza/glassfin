@@ -26,7 +26,6 @@ import ContinueRail from "./components/ContinueRail";
 import LibraryPanel from "./components/LibraryPanel";
 import PosterRail from "./components/PosterRail";
 import LiveLogDock from "./components/LiveLogDock";
-import SyncDock from "./components/SyncDock";
 import Onboarding, { type OnboardingSession } from "./components/Onboarding";
 
 // Lazy: route-only or modal-only components. Splitting these keeps the
@@ -41,6 +40,7 @@ const SettingsPage = lazy(() => import("./components/SettingsPage"));
 const DetailPage = lazy(() => import("./components/DetailPage"));
 const LibraryPage = lazy(() => import("./components/LibraryPage"));
 const FacetPage = lazy(() => import("./components/FacetPage"));
+const ProfilePicker = lazy(() => import("./components/ProfilePicker"));
 
 const savedSessionKey = "glassfin.session";
 const onboardingCompleteKey = "glassfin.onboardingComplete";
@@ -70,6 +70,7 @@ export default function App() {
   const route = useHashRoute();
   const activeNavTab = navTabForRoute(route);
   const showSettings = route.kind === "settings";
+  const showProfiles = route.kind === "profiles";
   const isLibraryRoute = route.kind === "library";
   const isFacetRoute = route.kind === "facet";
 
@@ -591,6 +592,61 @@ export default function App() {
     setNeedsOnboarding(false);
   }
 
+  // Sign out from the /profiles page. Drops the saved session and routes
+  // back to onboarding. Distinct from handleConnectionChange in that it
+  // clears the onboarding-complete flag too — the user is asking to start
+  // over, not just to swap servers.
+  function handleProfileSignOut() {
+    log.info("Sign-out requested from profile picker");
+    window.localStorage.removeItem(savedSessionKey);
+    setLibrary({ items: [], total: 0, nextStartIndex: 0, isLoading: false, isLoadingMore: false, error: null });
+    setResumeItems([]);
+    setRecentlyAdded([]);
+    setRecommended([]);
+    setFavorites([]);
+    setCollections([]);
+    setActiveClient(null);
+    setSelectedItem(null);
+    setConnection({
+      serverUrl: connection.serverUrl,
+      apiKey: undefined,
+      userId: undefined,
+      username: "",
+      password: "",
+    });
+    setConnectionStatus("Signed out");
+    hasInitializedRef.current = false;
+    navigate("/");
+    setNeedsOnboarding(true);
+  }
+
+  // Switching profiles from the picker. Clears the saved session and routes
+  // through onboarding with the picked username pre-filled. Authentication
+  // itself still happens in onboarding so we don't fork the auth surface.
+  function handleProfileSwitch(picked: { Id: string; Name: string }) {
+    log.info("Profile switch requested", { to: picked.Name });
+    window.localStorage.removeItem(savedSessionKey);
+    setLibrary({ items: [], total: 0, nextStartIndex: 0, isLoading: false, isLoadingMore: false, error: null });
+    setResumeItems([]);
+    setRecentlyAdded([]);
+    setRecommended([]);
+    setFavorites([]);
+    setCollections([]);
+    setActiveClient(null);
+    setSelectedItem(null);
+    setConnection({
+      serverUrl: connection.serverUrl,
+      apiKey: undefined,
+      userId: picked.Id,
+      username: picked.Name,
+      password: "",
+    });
+    setConnectionStatus(`Pick a password for ${picked.Name} or sign in.`);
+    hasInitializedRef.current = false;
+    navigate("/");
+    setNeedsOnboarding(true);
+  }
+
   function handleResetOnboarding() {
     log.info("Onboarding reset requested");
     window.localStorage.removeItem(onboardingCompleteKey);
@@ -629,6 +685,43 @@ export default function App() {
     );
   }
 
+  if (showProfiles) {
+    return (
+      <main className="app-shell">
+        <div className="ambient ambient-a" />
+        <div className="ambient ambient-b" />
+        <SideRail
+          activeTab={null}
+          hiddenTabs={prefs.hiddenLibraryTabs}
+          onSettings={() => navigate("/settings")}
+        />
+        <section className="content-shell">
+          <TopBar
+            query={query}
+            onQueryChange={setQuery}
+            isConnected={!!(connection.accessToken && connection.userId)}
+            username={connection.username}
+            onProfile={() => navigate("/profiles")}
+            syncState={syncStatus}
+          />
+          <Suspense fallback={<div className="profile-picker-page" aria-busy="true" />}>
+            <ProfilePicker
+              serverUrl={connection.serverUrl}
+              currentUserId={connection.userId}
+              currentUsername={connection.username}
+              isConnected={!!(connection.accessToken && connection.userId)}
+              onBack={() => goBack()}
+              onOpenSettings={() => navigate("/settings")}
+              onSignOut={handleProfileSignOut}
+              onSwitchTo={(picked) => handleProfileSwitch(picked)}
+            />
+          </Suspense>
+        </section>
+        <LiveLogDock />
+      </main>
+    );
+  }
+
   if (showSettings) {
     return (
       <main className="app-shell">
@@ -655,7 +748,8 @@ export default function App() {
             onResetOnboarding={handleResetOnboarding}
           />
         </Suspense>
-        <SyncDock state={syncStatus} />
+        {/* Sync chip moved inline into TopBar; Settings has its own back-button
+            chrome so sync visibility is paused while the user is configuring. */}
         <LiveLogDock />
       </main>
     );
@@ -678,7 +772,8 @@ export default function App() {
             onQueryChange={setQuery}
             isConnected={!!(connection.accessToken && connection.userId)}
             username={connection.username}
-            onProfile={() => navigate("/settings")}
+            onProfile={() => navigate("/profiles")}
+            syncState={syncStatus}
           />
           <Suspense fallback={<div className="library-page" aria-busy="true" />}>
             <LibraryPage
@@ -704,7 +799,6 @@ export default function App() {
             />
           )}
         </AnimatePresence>
-        <SyncDock state={syncStatus} />
         <LiveLogDock />
       </main>
     );
@@ -726,7 +820,8 @@ export default function App() {
             onQueryChange={setQuery}
             isConnected={!!(connection.accessToken && connection.userId)}
             username={connection.username}
-            onProfile={() => navigate("/settings")}
+            onProfile={() => navigate("/profiles")}
+            syncState={syncStatus}
           />
           <Suspense fallback={<div className="library-page" aria-busy="true" />}>
             <FacetPage
@@ -740,7 +835,6 @@ export default function App() {
             />
           </Suspense>
         </section>
-        <SyncDock state={syncStatus} />
         <LiveLogDock />
       </main>
     );
@@ -761,7 +855,8 @@ export default function App() {
           onQueryChange={setQuery}
           isConnected={!!(connection.accessToken && connection.userId)}
           username={connection.username}
-          onProfile={() => navigate("/settings")}
+          onProfile={() => navigate("/profiles")}
+          syncState={syncStatus}
         />
         {detailItem ? (
           <Suspense fallback={<div className="detail-page" aria-busy="true" />}>
@@ -918,7 +1013,6 @@ export default function App() {
           </Suspense>
         )}
       </AnimatePresence>
-      <SyncDock state={syncStatus} />
       <LiveLogDock />
     </main>
   );

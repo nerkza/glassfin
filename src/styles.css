@@ -6,11 +6,22 @@
   - Muted system-blue accent. No glowing borders, no laser gradients.
   - Tighter type rhythm. Larger corner radii. More whitespace.
   - Motion stays calm: short eases, small displacements.
+
+  Token values evolved 2026-05-05 to match the Claude Design prototype:
+  glass surfaces are more luminous (0.085 vs 0.045), backdrop blur
+  jumps from 40 → 60px and saturate(1.6 → 1.9), accent default lifts
+  to a friendlier blue (#7fb6ff). See PRODUCT_GUIDELINES.md §11.
 */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap");
 
 @font-face {
   font-family: "Glassfin Display";
-  src: local("SF Pro Display"), local("SF Pro Text"), local("Inter"), local("Helvetica Neue");
+  /* macOS gets SF Pro; everywhere else falls back to the curated
+     Google stack loaded above (Geist → Inter Tight → Manrope). */
+  src: local("SF Pro Display"), local("SF Pro Text"),
+       local("Geist"), local("Inter Tight"), local("Manrope"),
+       local("Helvetica Neue");
 }
 
 :root {
@@ -22,14 +33,17 @@
   --bg-tint-warm: rgba(255, 246, 230, 0.012);
   --bg-tint-cool: rgba(180, 200, 255, 0.018);
 
-  /* Glass surfaces */
-  --glass: rgba(255, 255, 255, 0.045);
-  --glass-strong: rgba(255, 255, 255, 0.07);
-  --glass-quiet: rgba(255, 255, 255, 0.022);
-  --glass-border: rgba(255, 255, 255, 0.085);
-  --glass-border-strong: rgba(255, 255, 255, 0.14);
-  --glass-inner-light: rgba(255, 255, 255, 0.05);
-  --glass-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.035) inset;
+  /* Glass surfaces — luminous Tahoe-style vibrancy */
+  --glass: rgba(255, 255, 255, 0.085);
+  --glass-strong: rgba(255, 255, 255, 0.13);
+  --glass-quiet: rgba(255, 255, 255, 0.045);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  --glass-border-strong: rgba(255, 255, 255, 0.26);
+  --glass-inner-light: rgba(255, 255, 255, 0.12);
+  --glass-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.09) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
 
   /* Text */
   --text: rgba(244, 244, 248, 0.96);
@@ -37,11 +51,11 @@
   --text-tertiary: rgba(244, 244, 248, 0.42);
   --text-quaternary: rgba(244, 244, 248, 0.24);
 
-  /* Accent — calm Apple-style system blue */
-  --accent: #4f9bff;
-  --accent-strong: #6aa9ff;
-  --accent-soft: rgba(79, 155, 255, 0.18);
-  --accent-quiet: rgba(79, 155, 255, 0.08);
+  /* Accent — lighter system blue */
+  --accent: #7fb6ff;
+  --accent-strong: #9bc4ff;
+  --accent-soft: rgba(127, 182, 255, 0.18);
+  --accent-quiet: rgba(127, 182, 255, 0.08);
 
   /* Status */
   --positive: #6ad19a;
@@ -61,10 +75,24 @@
   --leading-snug: 1.28;
   --leading-body: 1.55;
 
+  --tracking-display: -0.02em;
+  --tracking-heading: -0.01em;
+  --tracking-body: -0.005em;
+  --tracking-eyebrow: 0.06em;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-tap: cubic-bezier(0.32, 0.72, 0.24, 1);
+  --dur-hover: 160ms;
+  --dur-image: 600ms;
+  --dur-fade: 500ms;
+
   font-family:
     "Glassfin Display",
     "SF Pro Text",
-    "Inter",
+    "Geist",
+    "Inter Tight",
+    "Manrope",
     "Helvetica Neue",
     Arial,
     sans-serif;
@@ -121,7 +149,7 @@ a:focus-visible,
 .media-card:focus-visible {
   outline: 3px solid var(--accent-strong);
   outline-offset: 4px;
-  box-shadow: 0 0 0 6px rgba(79, 155, 255, 0.18);
+  box-shadow: 0 0 0 6px var(--accent-soft);
 }
 
 .poster-tile:focus-visible {
@@ -189,8 +217,8 @@ a:focus-visible,
   border: 1px solid var(--glass-border);
   background: var(--glass);
   box-shadow: var(--glass-shadow);
-  backdrop-filter: blur(40px) saturate(1.6);
-  -webkit-backdrop-filter: blur(40px) saturate(1.6);
+  backdrop-filter: blur(60px) saturate(1.9);
+  -webkit-backdrop-filter: blur(60px) saturate(1.9);
 }
 
 /*
@@ -231,20 +259,25 @@ a:focus-visible,
 
 .brand-mark {
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   place-items: center;
-  border-radius: 13px;
+  border-radius: 14px;
   color: #fff;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 60%),
-    linear-gradient(135deg, #4f9bff 0%, #7d6df0 100%);
+    linear-gradient(135deg, var(--accent) 0%, #9b78e6 100%);
   font-weight: 700;
   letter-spacing: -0.02em;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    0 8px 24px rgba(79, 155, 255, 0.18);
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 8px 24px color-mix(in oklab, var(--accent) 22%, transparent);
+  transition: transform 240ms var(--ease-tap);
+}
+
+.brand-mark:hover {
+  transform: scale(1.04);
 }
 
 .nav-stack {
@@ -309,11 +342,36 @@ a:focus-visible,
   box-shadow: inset 0 0 0 1px var(--glass-border-strong);
 }
 
+/* Active-state accent stripe — side-rail buttons only. The stripe sits
+   10px to the left of the button (outside the panel padding) so it reads
+   as a system indicator rather than part of the button itself. */
+.side-rail .icon-button {
+  position: relative;
+}
+
+.side-rail .icon-button.active::after {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  width: 3px;
+  height: 18px;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: translateY(-50%);
+  box-shadow: 0 0 8px var(--accent);
+}
+
 /* Top bar */
 .content-shell {
   position: relative;
   z-index: 1;
   display: grid;
+  /* Keep grid rows at content height. Default `align-content: normal` resolves
+     to `stretch`, which on a tall app-shell (`min-height: 100dvh`) inflates
+     short pages — the topbar grew to 384px and the profile-picker hero to
+     799px before this was set. */
+  align-content: start;
   gap: 22px;
   min-width: 0;
   max-width: 1680px;
@@ -323,9 +381,13 @@ a:focus-visible,
 
 .top-bar {
   display: grid;
-  grid-template-columns: minmax(240px, 600px) auto;
+  /* Three columns: search / sync chip / actions. The middle column is `1fr`
+     so any leftover horizontal room sits between the search and the action
+     chips rather than stretching the search edge-to-edge (which read as
+     "ridiculous" at 1500px+ widths). When sync is hidden, the middle column
+     stays empty space — the search keeps its tasteful max width. */
+  grid-template-columns: minmax(320px, 480px) minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
   gap: 14px;
 }
 
@@ -333,9 +395,19 @@ a:focus-visible,
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 48px;
-  padding: 0 18px;
+  min-height: 44px;
+  padding: 0 16px;
   border-radius: var(--r-md);
+  transition: border-color 200ms var(--ease-out);
+}
+
+.search:focus-within {
+  border-color: var(--glass-border-strong);
+}
+
+.search svg {
+  color: var(--text-tertiary);
+  flex: 0 0 auto;
 }
 
 .search input {
@@ -344,29 +416,43 @@ a:focus-visible,
   border: 0;
   color: var(--text);
   background: transparent;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   letter-spacing: -0.005em;
+  outline: none;
 }
 
 .search input::placeholder {
   color: var(--text-tertiary);
 }
 
+.search-kbd {
+  font-family: "Geist Mono", "SF Mono", ui-monospace, monospace;
+  font-size: 0.7rem;
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  color: var(--text-tertiary);
+  flex: 0 0 auto;
+}
+
 .top-actions {
   display: flex;
   align-items: center;
   gap: 8px;
+  justify-content: flex-end;
+  grid-column: 3;
 }
 
 .chip-button {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  min-height: 44px;
-  padding: 0 16px;
+  min-height: 40px;
+  padding: 0 14px;
   border-radius: var(--r-md);
   color: var(--text-secondary);
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: 500;
   letter-spacing: -0.005em;
 }
@@ -418,6 +504,163 @@ a:focus-visible,
   white-space: nowrap;
   font-weight: 600;
   letter-spacing: -0.005em;
+}
+
+/* ============================================================
+   Inline sync chip (top-bar)
+   ============================================================ */
+
+.sync-chip {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 42px;
+  padding: 0 14px 0 8px;
+  border-radius: var(--r-md);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--accent) 14%, var(--glass)) 0%, var(--glass) 100%);
+  border: 1px solid color-mix(in oklab, var(--accent) 32%, var(--glass-border));
+  backdrop-filter: blur(40px) saturate(1.7);
+  -webkit-backdrop-filter: blur(40px) saturate(1.7);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--accent) 18%, transparent) inset,
+    0 8px 24px -16px var(--accent);
+  min-width: 0;
+  justify-self: stretch;
+  position: relative;
+  overflow: hidden;
+  transition:
+    opacity 900ms cubic-bezier(0.65, 0, 0.35, 1),
+    transform 1200ms cubic-bezier(0.65, 0, 0.35, 1),
+    filter 800ms ease,
+    padding 1200ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.sync-chip.is-off {
+  opacity: 0;
+  transform: scale(0.94);
+  filter: blur(2px);
+  padding-left: 0;
+  padding-right: 0;
+  pointer-events: none;
+}
+
+.sync-chip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(60% 100% at 0% 50%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+.sync-chip .sync-icon {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: color-mix(in oklab, var(--accent) 28%, transparent);
+  color: var(--accent-strong);
+  box-shadow: 0 0 12px color-mix(in oklab, var(--accent) 50%, transparent);
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.sync-chip .sync-spinner {
+  display: inline-grid;
+  place-items: center;
+  animation: gf-sync-spin 1.1s linear infinite;
+}
+
+@keyframes gf-sync-spin {
+  to { transform: rotate(360deg); }
+}
+
+.sync-chip .sync-meta {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.sync-chip .sync-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text);
+  letter-spacing: -0.005em;
+  min-width: 0;
+}
+
+.sync-chip .sync-line .sync-label {
+  font-weight: 600;
+  flex: 0 0 auto;
+  color: var(--accent-strong);
+  text-transform: uppercase;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+}
+
+.sync-chip .sync-line .sync-file {
+  color: var(--text-tertiary);
+  font-family: "Geist Mono", "SF Mono", ui-monospace, monospace;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.sync-chip .sync-bar {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  position: relative;
+}
+
+.sync-chip .sync-bar-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, color-mix(in oklab, var(--accent) 70%, transparent), var(--accent));
+  box-shadow: 0 0 8px var(--accent);
+  border-radius: inherit;
+  transform-origin: left;
+  transition: transform 600ms var(--ease-out);
+}
+
+.sync-chip .sync-pct {
+  font-size: 0.82rem;
+  color: var(--accent-strong);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  font-family: "Geist Mono", "SF Mono", ui-monospace, monospace;
+  flex: 0 0 auto;
+}
+
+.sync-chip.is-error {
+  border-color: color-mix(in oklab, var(--danger) 50%, var(--glass-border));
+  background: linear-gradient(180deg, color-mix(in oklab, var(--danger) 12%, var(--glass)) 0%, var(--glass) 100%);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--danger) 18%, transparent) inset;
+}
+.sync-chip.is-error .sync-icon {
+  background: color-mix(in oklab, var(--danger) 28%, transparent);
+  color: var(--danger);
+  box-shadow: 0 0 12px color-mix(in oklab, var(--danger) 50%, transparent);
+}
+.sync-chip.is-error .sync-line .sync-label,
+.sync-chip.is-error .sync-pct {
+  color: var(--danger);
+}
+
+@media (max-width: 900px) {
+  .sync-chip {
+    /* On small viewports the inline chip steals too much room next to the
+       search input. Hide it; the user can still see sync state in
+       Settings → About if needed. */
+    display: none;
+  }
 }
 
 /* ============================================================
@@ -637,132 +880,6 @@ a:focus-visible,
     /* Avoid overlapping the bottom rail on phones. */
     bottom: 88px;
     right: 12px;
-    width: calc(100vw - 24px);
-  }
-}
-
-/* ============================================================
-   Floating sync indicator
-   ============================================================ */
-
-.sync-dock {
-  position: fixed;
-  left: 18px;
-  bottom: 18px;
-  z-index: 9;
-  width: min(340px, calc(100vw - 36px));
-  border-radius: var(--r-lg);
-  padding: 14px 16px 12px;
-  display: grid;
-  gap: 10px;
-}
-
-.sync-dock-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.sync-dock-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--text);
-  font-size: 0.92rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.sync-dock-close {
-  display: grid;
-  width: 26px;
-  height: 26px;
-  place-items: center;
-  border: 0;
-  border-radius: 8px;
-  color: var(--text-secondary);
-  background: transparent;
-  cursor: pointer;
-  transition: background 180ms ease, color 180ms ease;
-}
-
-.sync-dock-close:hover {
-  color: var(--text);
-  background: var(--glass);
-}
-
-.sync-dock-body {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.sync-dock-counts {
-  color: var(--text-secondary);
-  font-size: 0.86rem;
-  letter-spacing: -0.005em;
-}
-
-.sync-dock-counts strong {
-  color: var(--text);
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.sync-dock-elapsed {
-  color: var(--text-tertiary);
-  font-family: "SF Mono", "JetBrains Mono", ui-monospace, Menlo, monospace;
-  font-size: 0.78rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.sync-dock-progress {
-  position: relative;
-  height: 3px;
-  border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.08);
-  overflow: hidden;
-}
-
-.sync-dock-progress span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent-strong), var(--accent));
-  transition: width 240ms ease;
-}
-
-.sync-dock-progress.is-indeterminate span {
-  width: 35%;
-  animation: sync-indeterminate 1.4s ease-in-out infinite;
-}
-
-@keyframes sync-indeterminate {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(300%); }
-}
-
-/* Apple-style spinner using a single rotating arc. */
-.sync-spinner {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.18);
-  border-top-color: var(--accent-strong);
-  animation: sync-spin 0.9s linear infinite;
-}
-
-@keyframes sync-spin {
-  to { transform: rotate(360deg); }
-}
-
-@media (max-width: 760px) {
-  .sync-dock {
-    bottom: 88px;
-    left: 12px;
     width: calc(100vw - 24px);
   }
 }
@@ -1003,13 +1120,24 @@ a:focus-visible,
 }
 
 .hero-tag {
-  border: 1px solid var(--glass-border);
+  /* Uniform width so the stack of chips reads as a column rather than a
+     ragged-left list. Text is right-aligned inside the pill so values stay
+     visually anchored to the hero's right edge — short labels like "4K" sit
+     hard right, longer ones like "Science Fiction" still expand naturally. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 88px;
+  border: 1px solid var(--glass-border-strong);
   border-radius: var(--r-pill);
-  padding: 4px 10px;
-  background: var(--glass-quiet);
-  color: var(--text-secondary);
+  padding: 4px 14px;
+  /* Brighter than `--glass-quiet` — the chips were getting lost against the
+     hero vignette. `--glass` is the standard surface tint; `--text` (instead
+     of `--text-secondary`) lifts the label closer to white. */
+  background: var(--glass);
+  color: var(--text);
   font-size: 0.74rem;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: -0.005em;
   white-space: nowrap;
   backdrop-filter: blur(20px);
@@ -1106,32 +1234,62 @@ p {
   gap: 10px;
 }
 
+/* Hero CTA gets the bold-caps treatment — reads more cinematic than mixed-
+   case, matches the typographic energy of the hero title. Slightly looser
+   tracking compensates for the all-caps letter spacing. */
+.hero-actions .primary-button {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.86rem;
+  padding: 0 24px;
+}
+
 .primary-button,
 .secondary-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 9px;
-  min-height: 48px;
-  border-radius: var(--r-md);
+  min-height: 44px;
+  /* Pill — large radius so the buttons read as buttons rather than chips. */
+  border-radius: var(--r-pill);
   padding: 0 22px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.94rem;
   letter-spacing: -0.005em;
 }
 
 .primary-button {
-  color: #fff;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 50%),
-    linear-gradient(180deg, var(--accent-strong), var(--accent));
+  /* Glass pill — accent-tinted translucent fill, accent-coloured icon + label,
+     accent border. Reads as a "lit" call-to-action without competing with the
+     artwork the way a solid white or solid accent fill would. The shadow is
+     tight and pill-shaped so it doesn't render as a square when the hero
+     panel clips overflow. */
+  color: var(--accent-strong);
+  background: var(--accent-quiet);
+  border: 2px solid color-mix(in oklab, var(--accent) 55%, transparent);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 10px 26px rgba(79, 155, 255, 0.28);
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 .primary-button:hover {
-  filter: brightness(1.06);
+  background: var(--accent-soft);
+  border-color: color-mix(in oklab, var(--accent) 70%, transparent);
+  color: var(--accent-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.primary-button:active {
+  background: var(--accent-quiet);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
 .secondary-button {
@@ -1145,6 +1303,21 @@ p {
 .secondary-button:hover {
   background: var(--glass-strong);
   border-color: var(--glass-border-strong);
+}
+
+.secondary-button.danger {
+  color: var(--danger);
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+.secondary-button.danger:hover {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.5);
+}
+
+.secondary-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .quality-strip {
@@ -2585,21 +2758,19 @@ p {
   position: relative;
   overflow: hidden;
   border-radius: var(--r-lg);
-  background: var(--glass-quiet);
   border: 1px solid var(--glass-border);
   min-height: 240px;
-}
-
-.skeleton-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    100deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.04) 50%,
-    transparent 70%
+  background-color: var(--glass-quiet);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.07) 50%,
+    transparent 65%,
+    transparent 100%
   );
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
   animation: shimmer 1.6s linear infinite;
 }
 
@@ -2624,8 +2795,235 @@ p {
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* ============================================================
+   Profile picker page (/profiles)
+   ============================================================ */
+
+.profile-picker-page {
+  display: grid;
+  gap: 22px;
+  padding: 0 4px;
+}
+
+.profile-picker-toolbar {
+  display: flex;
+}
+
+.profile-picker-hero {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: center;
+  padding: 26px 28px;
+  border-radius: var(--r-xl);
+}
+
+.profile-picker-hero-avatar {
+  display: grid;
+  width: 96px;
+  height: 96px;
+  place-items: center;
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 60%),
+    linear-gradient(135deg, var(--accent), #9b78e6);
+  color: #fff;
+  font-weight: 600;
+  font-size: 2.4rem;
+  letter-spacing: -0.02em;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 12px 36px color-mix(in oklab, var(--accent) 22%, transparent);
+}
+
+.profile-picker-hero-meta {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.profile-picker-hero-meta h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 2.2vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.profile-picker-server {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-family: "Geist Mono", "SF Mono", ui-monospace, monospace;
+  font-size: 0.82rem;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-picker-hero-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.profile-picker-section {
+  display: grid;
+  gap: 14px;
+  padding: 0 4px;
+}
+
+.profile-picker-section h2 {
+  margin: 0;
+}
+
+.profile-picker-error {
+  padding: 14px 18px;
+  border-radius: var(--r-sm);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  background: rgba(248, 113, 113, 0.08);
+  color: var(--text);
+}
+
+.profile-picker-error strong { font-weight: 600; }
+.profile-picker-error p {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.profile-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 18px;
+  max-width: 920px;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  padding: 20px;
+  border-radius: var(--r-md);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  transition:
+    transform 240ms var(--ease-out),
+    background 200ms ease,
+    border-color 200ms ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-2px);
+  background: var(--glass-strong);
+  border-color: var(--glass-border-strong);
+}
+
+.profile-card.is-active {
+  border-color: var(--accent);
+  background: var(--accent-quiet);
+  cursor: default;
+}
+
+.profile-card.is-active:hover {
+  transform: none;
+}
+
+.profile-card .profile-avatar {
+  position: relative;
+  display: grid;
+  width: 90px;
+  height: 90px;
+  place-items: center;
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--accent), #9b78e6);
+  color: #fff;
+  font-weight: 600;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+  overflow: hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 8px 24px color-mix(in oklab, var(--accent) 18%, transparent);
+}
+
+.profile-card .profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+.profile-card .profile-active-dot {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  border: 3px solid var(--bg-base);
+  box-shadow: 0 2px 8px color-mix(in oklab, var(--accent) 40%, transparent);
+}
+
+.profile-card .profile-name {
+  font-size: 0.96rem;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.005em;
+}
+
+.profile-card .profile-role {
+  font-size: 0.76rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.profile-card-skeleton {
+  pointer-events: none;
+}
+
+.profile-avatar-skeleton {
+  width: 90px;
+  height: 90px;
+  border-radius: 24px;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.profile-name-skeleton {
+  width: 70%;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+@media (max-width: 760px) {
+  .profile-picker-hero {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    gap: 18px;
+  }
+  .profile-picker-hero-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
 }
 
 /* ============================================================
@@ -3503,14 +3901,14 @@ html[data-density="spacious"] .content-shell {
 }
 
 /* ============================================================
-   ColorWheel: hue ring + SV square (Lightroom-style picker)
+   ColorWheel: react-colorful HexColorPicker, Glassfin-restyled
    ============================================================ */
 
 .color-wheel {
   display: grid;
-  gap: 18px;
+  gap: 22px;
   align-items: start;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 220px 1fr;
   margin: 8px 0 16px;
 }
 
@@ -3521,88 +3919,51 @@ html[data-density="spacious"] .content-shell {
   }
 }
 
-.color-wheel-ring {
-  position: relative;
-  width: 240px;
-  height: 240px;
-  border-radius: 50%;
-  /* Hue ring: conic gradient masked to leave only the outer band visible.
-     `from 0deg` puts red at 3 o'clock so a hue of 0 maps to (cx + r, cy). */
-  background: conic-gradient(
-    from 0deg,
-    #ff0000 0%,
-    #ffff00 17%,
-    #00ff00 33%,
-    #00ffff 50%,
-    #0000ff 67%,
-    #ff00ff 83%,
-    #ff0000 100%
-  );
-  -webkit-mask: radial-gradient(
-    circle at center,
-    transparent 0,
-    transparent calc(50% - 24px),
-    black calc(50% - 24px),
-    black 50%,
-    transparent 50%
-  );
-  mask: radial-gradient(
-    circle at center,
-    transparent 0,
-    transparent calc(50% - 24px),
-    black calc(50% - 24px),
-    black 50%,
-    transparent 50%
-  );
-  /* Mask removes the box around the wheel, but we still want pointer events
-     on the SV square (which sits inside). The square is a DOM child rather
-     than overlapping the masked-out region, so this works without
-     pointer-events fiddling. */
-  cursor: crosshair;
-  touch-action: none;
+.color-wheel-picker-wrap {
+  width: 220px;
 }
 
-.color-wheel-hue-thumb {
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 3px solid #fff;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.45);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
+/* react-colorful overrides — match Glassfin's radii, accent, and shadow.
+   The library scopes everything under .react-colorful so we can rewrite
+   the surface treatment without forking the package. */
+.color-wheel .react-colorful {
+  width: 100%;
+  height: 220px;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-md);
+  background: transparent;
 }
 
-.color-wheel-sv {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 130px;
-  height: 130px;
-  transform: translate(-50%, -50%);
+.color-wheel .react-colorful__saturation {
+  flex: 1;
   border-radius: var(--r-sm);
-  /* Two layered linear-gradients: bottom = white→hue (saturation axis),
-     top = transparent→black (value axis). The hue is wired via a CSS
-     custom property the JS sets on this element. */
-  background:
-    linear-gradient(to top, #000, transparent),
-    linear-gradient(to right, #fff, hsl(var(--wheel-hue, 215), 100%, 50%));
-  cursor: crosshair;
-  touch-action: none;
+  border-bottom: 0;
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.15),
+    inset 0 0 0 1px var(--glass-border),
     0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
-.color-wheel-sv-thumb {
-  position: absolute;
+.color-wheel .react-colorful__hue {
+  height: 18px;
+  flex: 0 0 auto;
+  border-radius: var(--r-pill);
+  box-shadow: inset 0 0 0 1px var(--glass-border);
+}
+
+.color-wheel .react-colorful__pointer {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #fff;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.45),
+    0 4px 10px rgba(0, 0, 0, 0.45);
+}
+
+.color-wheel .react-colorful__saturation-pointer {
   width: 16px;
   height: 16px;
-  border-radius: 50%;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
-  transform: translate(-50%, -50%);
-  pointer-events: none;
 }
 
 .color-wheel-readout {

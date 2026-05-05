@@ -121,6 +121,14 @@ function SettingsPage({
   onResetOnboarding?: () => void;
 }) {
   const [activeCategory, setActiveCategory] = useState<CategoryId>("connection");
+  // Reset window scroll when the user switches settings tabs. Without this,
+  // scrolling deep into a long tab (e.g. Display) and then clicking a short
+  // tab (e.g. About) leaves the page parked at the old scroll position; the
+  // sticky nav rail then appears to "jump" to a different Y because the
+  // shorter content can't sustain the same scroll. Reset to top fixes both.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [activeCategory]);
   const [plugins, setPlugins] = useState<Plugin[]>(registry.list());
   const [installingId, setInstallingId] = useState<string | null>(null);
   // Bumps when plugin panels need re-rendering (e.g., after install/uninstall
@@ -711,7 +719,7 @@ function SettingsPage({
                   — see the Sunset built-in.
                 </p>
                 <ColorWheel
-                  value={prefs.accentColor ?? "#4f9bff"}
+                  value={prefs.accentColor ?? "#7fb6ff"}
                   onChange={(hex) => {
                     updatePrefs((c) => ({ ...c, accentColor: hex }));
                   }}
@@ -921,22 +929,12 @@ function SettingsPage({
                 <span className="detail-section-label">Glassfin</span>
                 <div className="server-card">
                   <span>Version</span>
-                  <strong>{appVersion?.version ?? "0.1.0"}</strong>
+                  <strong>{appVersion?.version ?? "0.0.1"}</strong>
                   <small>
                     {appVersion?.gitSha && appVersion.gitSha !== "unknown"
                       ? `Build ${appVersion.gitSha}${appVersion.builtAt && appVersion.builtAt !== "unknown" ? ` · ${appVersion.builtAt}` : ""}`
                       : "Development build (no /version.json — running outside the container?)"}
                   </small>
-                </div>
-                <div className="server-card">
-                  <span>Stack</span>
-                  <strong>React + TypeScript + Vite</strong>
-                  <small>Static PWA media client for Jellyfin</small>
-                </div>
-                <div className="server-card">
-                  <span>Player engine</span>
-                  <strong>@vidstack/react</strong>
-                  <small>HLS-aware, custom glass-themed transport</small>
                 </div>
               </div>
 

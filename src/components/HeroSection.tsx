@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconChevronLeft, IconChevronRight, IconPlayFill } from "symbols-react";
 import { type MediaItem, type DeviceTarget } from "../media";
-import { navigate } from "../router";
 import MagneticButton from "./MagneticButton";
 
 const ROTATE_INTERVAL_MS = 7000;
@@ -151,20 +150,11 @@ function HeroSection({
                 <span className="hero-tag">{active.year}</span>
                 <span className="hero-tag">{active.runtime}</span>
                 <span className="hero-tag">{active.rating}</span>
+                {/* Genre chips here are decorative labels only — the detail
+                    page is where they become clickable navigation. See
+                    PRODUCT_GUIDELINES.md §4.2 for the rationale. */}
                 {active.genres && active.genres.slice(0, 3).map((g) => (
-                  <button
-                    key={g}
-                    type="button"
-                    className="hero-tag hero-tag-clickable"
-                    style={chipStyle(g)}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      navigate(`/genre/${encodeURIComponent(g)}`);
-                    }}
-                    title={`Browse ${g}`}
-                  >
-                    {g}
-                  </button>
+                  <span key={g} className="hero-tag" style={chipStyle(g)}>{g}</span>
                 ))}
                 {active.meta.slice(0, 4).map((tag) => (
                   <span key={tag} className="hero-tag" style={chipStyle(tag)}>{tag}</span>

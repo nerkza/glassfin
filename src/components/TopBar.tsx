@@ -2,6 +2,7 @@ import {
   IconMagnifyingglass,
   IconPersonCropCircleFill,
 } from "symbols-react";
+import SyncChip, { type SyncState } from "./SyncChip";
 
 function TopBar({
   query,
@@ -9,24 +10,34 @@ function TopBar({
   isConnected,
   username,
   onProfile,
+  syncState,
 }: {
   query: string;
   onQueryChange: (query: string) => void;
   isConnected: boolean;
   username?: string;
   onProfile?: () => void;
+  syncState?: SyncState;
 }) {
   return (
     <header className="top-bar">
-      <div className="search glass-panel">
-        <IconMagnifyingglass width={18} height={18} />
+      <label className="search glass-panel">
+        <IconMagnifyingglass width={16} height={16} />
         <input
           aria-label="Search library"
           placeholder="Search films, shows, music, live channels"
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}
         />
-      </div>
+        <kbd className="search-kbd" aria-hidden="true">⌘K</kbd>
+      </label>
+      {syncState ? (
+        <SyncChip state={syncState} />
+      ) : (
+        // Empty placeholder column so the grid keeps three columns and
+        // the right-side actions sit flush right.
+        <span aria-hidden="true" />
+      )}
       <div className="top-actions">
         <button
           className={`chip-button glass-panel status-chip ${isConnected ? "is-online" : "is-offline"}`}
@@ -44,7 +55,7 @@ function TopBar({
           type="button"
           onClick={onProfile}
         >
-          <IconPersonCropCircleFill width={20} height={20} />
+          <IconPersonCropCircleFill width={18} height={18} />
           <span className="profile-chip-name">{username || "Sign in"}</span>
         </button>
       </div>

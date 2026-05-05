@@ -4,6 +4,10 @@ A reusable spec for the Glassfin visual language. Pass this to Claude (or any de
 
 This document captures **what's already in the code** — every token here is sourced from `src/styles.css`. Treat it as descriptive, not aspirational.
 
+> **Companion doc:** [PRODUCT_GUIDELINES.md](PRODUCT_GUIDELINES.md) covers *how Glassfin should look and behave at the product level* — surfaces, states, motion, and the rules a designer needs before they start a screen. This doc covers the **token reference** (every CSS var, every radius, every easing curve). Use the two together: PRODUCT_GUIDELINES tells you *what* to build, this doc tells you *what to build it with*.
+>
+> Where the two diverge, **PRODUCT_GUIDELINES is canonical** — it's anchored to the Claude Design prototype at [docs/ui-prototype/Glassfin/](docs/ui-prototype/Glassfin/) and this doc is catching up. The current state-of-the-code values are still listed here as the truth-on-disk.
+
 ---
 
 ## 1. Principles

@@ -2,7 +2,7 @@
 
 A polished, Apple-style glass PWA media client for [Jellyfin](https://jellyfin.org). No backend — the browser talks to Jellyfin directly. Designed for self-hosters who want a more premium frontend than Jellyfin's default web client.
 
-> **Status:** pre-1.0 (`0.1.x`). Verified end-to-end against a live Jellyfin server with 8.5k items. Some surfaces are awaiting their first real-server QA — see [PROJECT_REVIEW.md](PROJECT_REVIEW.md) for the gate matrix.
+> **Status:** pre-1.0 (`0.0.x` — current: `v0.0.1`). Verified end-to-end against a live Jellyfin server with 8.5k items. Some surfaces are awaiting their first real-server QA — see [PROJECT_REVIEW.md](PROJECT_REVIEW.md) for the gate matrix. Version history lives in [CHANGELOG.md](CHANGELOG.md); the versioning rule itself is in [PRODUCT_GUIDELINES.md](PRODUCT_GUIDELINES.md) §16.
 
 ```
 ┌──────────┐                    ┌────────────────┐

@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
     /genre/{name}  faceted library — items tagged with this genre
     /person/{id}   faceted library — items featuring this person
     /item/{id}     item detail page (id = Jellyfin item id)
+    /profiles      profile picker (switch / sign out)
     /settings      settings
 
   We don't pull in react-router — the surface is small and this module stays
@@ -34,6 +35,7 @@ export type Route =
   | { kind: "library"; tab: LibraryTab }
   | { kind: "facet"; facet: FacetKind; value: string }
   | { kind: "item"; id: string }
+  | { kind: "profiles" }
   | { kind: "settings" };
 
 const LIBRARY_TABS: readonly LibraryTab[] = ["movies", "shows", "music", "live"];
@@ -56,6 +58,7 @@ export function parseHash(hash: string): Route {
     const value = decodeURIComponent(trimmed.slice("/person/".length));
     if (value) return { kind: "facet", facet: "person", value };
   }
+  if (trimmed === "/profiles") return { kind: "profiles" };
   if (trimmed === "/settings") return { kind: "settings" };
 
   for (const tab of LIBRARY_TABS) {
@@ -76,6 +79,8 @@ export function routeToPath(route: Route): string {
       return `/${route.facet}/${encodeURIComponent(route.value)}`;
     case "item":
       return `/item/${route.id}`;
+    case "profiles":
+      return "/profiles";
     case "settings":
       return "/settings";
   }

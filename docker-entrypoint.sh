@@ -23,7 +23,7 @@ EOF
 cat > /usr/share/nginx/html/version.json <<EOF
 {
   "name": "glassfin",
-  "version": "${GLASSFIN_VERSION:-0.1.0}",
+  "version": "${GLASSFIN_VERSION:-0.0.1}",
   "gitSha": "${GLASSFIN_GIT_SHA:-unknown}",
   "builtAt": "${GLASSFIN_BUILT_AT:-unknown}",
   "remoteAccessMode": "${REMOTE_ACCESS_MODE:-lan}"
