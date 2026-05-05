@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Vite caches
+.vite/
+
+# Local env / secrets — runtime config lives in public/config.js, but
+# never let .env files slip through if someone uses one.
+.env
+.env.local
+.env.*.local
+
+# Test / coverage
+coverage/
+
+# Editor / OS noise
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.log
+*.swp
+.swo
+
+# Claude Code session artefacts (private to this checkout)
+.claude/
+.playwright-mcp/

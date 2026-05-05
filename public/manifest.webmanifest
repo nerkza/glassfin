@@ -1,0 +1,34 @@
+{
+  "name": "Glassfin",
+  "short_name": "Glassfin",
+  "description": "A modern PWA media surface for Jellyfin libraries.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#101113",
+  "theme_color": "#101113",
+  "categories": ["entertainment", "video", "music"],
+  "icons": [
+    {
+      "src": "/pwa-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Continue Watching",
+      "short_name": "Continue",
+      "url": "/?section=continue",
+      "description": "Jump back into active playback."
+    },
+    {
+      "name": "Live TV",
+      "short_name": "Live TV",
+      "url": "/?section=live",
+      "description": "Open the live and scheduled channels view."
+    }
+  ]
+}
