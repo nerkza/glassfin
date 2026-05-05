@@ -1,0 +1,7 @@
+tunnel: glassfin
+credentials-file: /etc/cloudflared/glassfin.json
+
+ingress:
+  - hostname: glassfin.example.com
+    service: http://glassfin:8080
+  - service: http_status:404

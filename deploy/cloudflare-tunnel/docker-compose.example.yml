@@ -1,0 +1,20 @@
+services:
+  glassfin:
+    build: ../..
+    container_name: glassfin
+    restart: unless-stopped
+    environment:
+      JELLYFIN_URL: "https://jellyfin.example.com"
+      PUBLIC_APP_URL: "https://glassfin.example.com"
+      REMOTE_ACCESS_MODE: "cloudflare"
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: glassfin-cloudflared
+    restart: unless-stopped
+    command: tunnel --config /etc/cloudflared/config.yml run
+    volumes:
+      - ./config.yml:/etc/cloudflared/config.yml:ro
+      - ./glassfin.json:/etc/cloudflared/glassfin.json:ro
+    depends_on:
+      - glassfin

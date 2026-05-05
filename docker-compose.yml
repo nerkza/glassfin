@@ -1,0 +1,34 @@
+services:
+  glassfin:
+    build:
+      context: .
+      args:
+        # Bake build metadata into /version.json. CI should pass these via
+        # --build-arg with the real values; local builds get the defaults.
+        GLASSFIN_VERSION: ${GLASSFIN_VERSION:-0.1.0-dev}
+        GLASSFIN_GIT_SHA: ${GLASSFIN_GIT_SHA:-local}
+        GLASSFIN_BUILT_AT: ${GLASSFIN_BUILT_AT:-local}
+    container_name: glassfin
+    restart: unless-stopped
+    ports:
+      - "8088:8080"
+    environment:
+      # Jellyfin connection — required for the app to do anything.
+      JELLYFIN_URL: "http://jellyfin:8096"
+      JELLYFIN_API_KEY: ""
+      JELLYFIN_USER_ID: ""
+      PUBLIC_APP_URL: "http://localhost:8088"
+      REMOTE_ACCESS_MODE: "lan"
+      # Optional — Sonarr / Radarr companions. When both URL + key are set
+      # for a service, the search empty state offers to request missing
+      # titles via the *arr instance. See deploy/REMOTE_ACCESS.md.
+      SONARR_URL: ""
+      SONARR_API_KEY: ""
+      RADARR_URL: ""
+      RADARR_API_KEY: ""
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s

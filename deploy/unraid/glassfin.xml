@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>Glassfin</Name>
+  <Repository>ghcr.io/nerkza/glassfin:latest</Repository>
+  <Registry>https://ghcr.io/nerkza/glassfin</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/nerkza/glassfin/issues</Support>
+  <Project>https://github.com/nerkza/glassfin</Project>
+  <Overview>
+    Glassfin is a glass-themed PWA media client for Jellyfin. Browser → Jellyfin direct, no backend.
+    Optional Sonarr/Radarr integration for "request missing titles" from search.
+    Configure via env vars; no rebuilds needed.
+  </Overview>
+  <Category>MediaApp:Video MediaServer:Video Tools:</Category>
+  <WebUI>http://[IP]:[PORT:8080]/</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/nerkza/glassfin/main/deploy/unraid/glassfin.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/nerkza/glassfin/main/public/pwa-icon.svg</Icon>
+  <ExtraParams>--restart=unless-stopped</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires>A reachable Jellyfin server. The browser must be able to hit JELLYFIN_URL directly — see the project's deploy/REMOTE_ACCESS.md for CORS guidance.</Requires>
+
+  <Config Name="WebUI Port" Target="8080" Default="8088" Mode="tcp" Description="Host port for the Glassfin web UI" Type="Port" Display="always" Required="true" Mask="false">8088</Config>
+
+  <Config Name="JELLYFIN_URL" Target="JELLYFIN_URL" Default="http://192.168.1.10:8096" Mode="" Description="Browser-reachable Jellyfin base URL. The browser hits this directly — must be reachable from wherever you open Glassfin." Type="Variable" Display="always" Required="true" Mask="false"></Config>
+
+  <Config Name="JELLYFIN_API_KEY" Target="JELLYFIN_API_KEY" Default="" Mode="" Description="Optional. Auth-by-name (sign-in form) is the preferred path; this key is only for headless / fallback use." Type="Variable" Display="advanced" Required="false" Mask="true"></Config>
+
+  <Config Name="JELLYFIN_USER_ID" Target="JELLYFIN_USER_ID" Default="" Mode="" Description="Optional. Pinned user UUID used with the API key fallback." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+
+  <Config Name="PUBLIC_APP_URL" Target="PUBLIC_APP_URL" Default="http://[IP]:8088" Mode="" Description="External URL users open to reach Glassfin. Used by docs and ServerInfo." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+
+  <Config Name="REMOTE_ACCESS_MODE" Target="REMOTE_ACCESS_MODE" Default="lan" Mode="" Description="lan, tailscale, or cloudflare. Drives the deploy-mode label only — doesn't change behaviour." Type="Variable" Display="advanced" Required="false" Mask="false">lan</Config>
+
+  <Config Name="SONARR_URL" Target="SONARR_URL" Default="" Mode="" Description="Optional. Set to enable 'Request via Sonarr' on search empty state. Browser-reachable Sonarr base URL." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+
+  <Config Name="SONARR_API_KEY" Target="SONARR_API_KEY" Default="" Mode="" Description="Sonarr API key from Settings → General → Security in the Sonarr UI." Type="Variable" Display="always" Required="false" Mask="true"></Config>
+
+  <Config Name="RADARR_URL" Target="RADARR_URL" Default="" Mode="" Description="Optional. Set to enable 'Request via Radarr' on search empty state. Browser-reachable Radarr base URL." Type="Variable" Display="always" Required="false" Mask="false"></Config>
+
+  <Config Name="RADARR_API_KEY" Target="RADARR_API_KEY" Default="" Mode="" Description="Radarr API key from Settings → General → Security in the Radarr UI." Type="Variable" Display="always" Required="false" Mask="true"></Config>
+
+  <Config Name="TZ" Target="TZ" Default="Etc/UTC" Mode="" Description="Container timezone." Type="Variable" Display="advanced" Required="false" Mask="false">Etc/UTC</Config>
+</Container>
